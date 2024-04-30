@@ -59,10 +59,5 @@ export function displayController () {
         return renderToDoForm
     }
 
-
-    function renderAppFrame() {
-        document
-    }
-
     return {renderToDo,renderToDoForm,renderToDosList}
 }
