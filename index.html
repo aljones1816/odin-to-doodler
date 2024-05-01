@@ -1,21 +1,40 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>To Doodler</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <div id="app">
-  
-      <div class="menu">menu</div>
+      <div class="menu">
+        <ul class="menu-items">
+          <li>Inbox</li>
+          <li>Today</li>
+          <li>Family</li>
+          <li>Work</li>
+          <li><button type="button">+</button></li>
+        </ul>
+      </div>
       <div class="todo-list">
-        <div class="todo-item"></div>
-        <div class="todo-item"></div>
-        <div class="todo-item"></div>
-        <div class="todo-item"></div>
-        <div class="todo-item"></div>
+        <div class="todo-project-title">Family</div>
+        <div class="todo-item">
+          <h1 id="todoTitle">Make cake</h1>
+          <p id="project">Family</p>
+          <input type="checkbox" />
+        </div>
+        <div class="todo-item">
+          <h1 id="todoTitle">Buy food</h1>
+          <p id="project">Work</p>
+          <input type="checkbox" />
+        </div>
+        <div class="todo-item">
+          <h1 id="todoTitle">Eat later</h1>
+          <p id="project">Family</p>
+          <input type="checkbox" />
+        </div>
+        <button type="button">+</button>
       </div>
     </div>
     <script type="module" src="/main.js"></script>
