@@ -1,63 +1,82 @@
 import { logicController } from "./logicController";
-import todoForm from '../components/todoForm.html?raw';
-import todoItemTemplate from '../components/todoItem.html?raw';
 
 const logicControl = logicController();
 
 export function displayController () {
 
-    function renderToDo(todo) {
+    function renderTodoListItem(todo) {
         
-        const todoCard = document.createElement('div');
-        todoCard.innerHTML = todoItemTemplate;
+        const todoListItem = document.createElement('div');
+        todoListItem.id = `todo-${todo.getId()}`;
+        todoListItem.className = "todo-list__item";
 
+        const todoListCheckbox = document.createElement('input');
+        todoListCheckbox.type = 'checkbox';
+        todoListCheckbox.id = `todo${todo.getId()}`;
+
+        const todoListLabel = document.createElement('label');
+        todoListLabel.htmlFor = `todo${todo.getId()}`;
+        todoListLabel.appendChild(document.createTextNode(`${todo.getTitle()}`));
+
+        const todoListGroup = document.createElement('span');
+        todoListGroup.className = "todo-list__group";
+        todoListGroup.appendChild(document.createTextNode(`${todo.getGroup()}`))
+
+        const todoListExpandBtn = document.createElement('button');
+        todoListExpandBtn.type = 'button';
+        todoListExpandBtn.className = 'todo-list__expand-btn';
+        todoListExpandBtn.textContent = '⮟';
+        todoListExpandBtn.addEventListener('click', e => {e.stopPropagation()});
+
+        todoListItem.appendChild(todoListCheckbox);
+        todoListItem.appendChild(todoListLabel);
+        todoListItem.appendChild(todoListGroup);
+        todoListItem.appendChild(todoListExpandBtn);
     
-        todoCard.querySelector('#todoTitle').textContent = todo.getTitle();
-        todoCard.querySelector('#todoDescription').textContent = todo.getDescription();
 
-    return todoCard;
+    return todoListItem;
     }
 
     function renderToDosList() {
-        let todosContainer = document.getElementById('todosContainer')
+        let todosList = document.getElementById('todo-list')
 
-        if (!todosContainer) {
-            todosContainer = document.createElement('div');
-            todosContainer.id = 'todosContainer';
-            const app = document.getElementById('app')
-            app.appendChild(todosContainer)
-        }
+        // clear existing content
+        todosList.innerHTML = '';
 
-        todosContainer.innerHTML = '';
+       // create title element
+        const todoListTitle = document.createElement('h2');
+        todoListTitle.className = 'todo-list__title';
+        todoListTitle.appendChild(document.createTextNode(`All Items`));
+
+        todosList.appendChild(todoListTitle);
+        
+        // append each todo item
         const todos = logicControl.getToDos();
         todos.forEach(todo => {
-            const todoCard = renderToDo(todo);
-            todosContainer.appendChild(todoCard);
+            const todoListItem = renderTodoListItem(todo);
+            todosList.appendChild(todoListItem);
         });
+
+        // append footer component
+        const todoListFooter = document.createElement('div');
+        todoListFooter.className = 'todo-list__footer';
+
+        const todoListInput = document.createElement('input');
+        todoListInput.className = 'todo-list__input'
+        todoListInput.type = 'text';
+        todoListInput.placeholder = 'Add new todo';
+
+        const todoListButton = document.createElement('button');
+        todoListButton.className = 'todo-list__button';
+        todoListButton.type = 'button';
+        todoListButton.textContent = 'Add';
+
+        todoListFooter.appendChild(todoListInput);
+        todoListFooter.appendChild(todoListButton);
+
+        todosList.appendChild(todoListFooter);
     }
 
-    function renderToDoForm () {
-        const renderToDoForm = document.createElement("form");
-        renderToDoForm.id = "renderToDoForm";
-        renderToDoForm.innerHTML = todoForm;
-        renderToDoForm.addEventListener('submit', (e) => {
-            e.preventDefault();
 
-            const formData = {
-                todo: renderToDoForm.todo.value,
-                description: renderToDoForm.description.value,
-                dueDate: renderToDoForm.dueDate.value,
-                priority: renderToDoForm.priority.value
-            };
-            renderToDoForm.reset();
-            logicControl.handleFormSubmit(formData)
-            renderToDosList()
-            
-        })
-
-
-        return renderToDoForm
-    }
-
-    return {renderToDo,renderToDoForm,renderToDosList}
+    return {renderToDosList}
 }

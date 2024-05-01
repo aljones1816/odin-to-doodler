@@ -8,33 +8,18 @@
   </head>
   <body>
     <div id="app">
+
       <div class="menu">
-        <ul class="menu-items">
-          <li>Inbox</li>
-          <li>Today</li>
-          <li>Family</li>
-          <li>Work</li>
-          <li><button type="button">+</button></li>
+        <ul class="menu__list">
+          <li class="menu__item">Inbox</li>
+          <li class="menu__item">Today</li>
+          <li class="menu__item">Family</li>
+          <li class="menu__item">Work</li>
         </ul>
+        <button class="menu__button">New Group</button>
       </div>
-      <div class="todo-list">
-        <div class="todo-project-title">Family</div>
-        <div class="todo-item">
-          <h1 id="todoTitle">Make cake</h1>
-          <p id="project">Family</p>
-          <input type="checkbox" />
-        </div>
-        <div class="todo-item">
-          <h1 id="todoTitle">Buy food</h1>
-          <p id="project">Work</p>
-          <input type="checkbox" />
-        </div>
-        <div class="todo-item">
-          <h1 id="todoTitle">Eat later</h1>
-          <p id="project">Family</p>
-          <input type="checkbox" />
-        </div>
-        <button type="button">+</button>
+
+      <div class="todo-list" id="todo-list">
       </div>
     </div>
     <script type="module" src="/main.js"></script>

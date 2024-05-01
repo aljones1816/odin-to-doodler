@@ -1,9 +1,14 @@
-export function toDo (title, description="", dueDate="", priority="", project="") {
+export function toDo (id, title, description="", dueDate="", group="", status=false) {
+    id;
     title;
     description;
     dueDate;
-    priority;
-    project;
+    group;
+    status;
+
+    function getId () {
+        return id;
+    }
 
     function getTitle () {
         return title;
@@ -29,21 +34,34 @@ export function toDo (title, description="", dueDate="", priority="", project=""
         dueDate = newDueDate;
     }
 
-    function getPriority () {
-        return priority;
+    function setGroup(newGroup) {
+        group = newGroup;
     }
 
-    function setPriority(newPriority) {
-        priority = newPriority;
+    function getGroup() {
+        return group;
     }
 
-    return {getTitle, 
-            getDescription,
-            getDueDate,
-            getPriority,
-            setTitle,
-            setDescription,
-            setDueDate,
-            setPriority
-            }
+    function getStatus () {
+        return status;
+    }
+
+    function setStatus () {
+        status != status;
+    }
+
+
+    return {
+        getId,
+        getTitle,
+        setTitle,
+        getDescription,
+        setDescription,
+        getDueDate,
+        setDueDate,
+        getGroup,
+        setGroup,
+        getStatus,
+        setStatus
+    };
 }

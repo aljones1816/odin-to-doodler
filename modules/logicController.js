@@ -19,17 +19,19 @@ export function logicController () {
         let newToDos;
         
         const newToDo = {
+                id: todo.getId(),
                 title: todo.getTitle(),
                 description: todo.getDescription(),
                 dueDate: todo.getDueDate(),
-                priority: todo.getPriority()
+                group: todo.getGroup(),
+                status: todo.getStatus()
             }  
 
         if (currentToDos) {
                 newToDos = currentToDos;
-                console.log(newToDos);
+                
                 newToDos.push(newToDo); 
-                console.log(newToDos);
+                
         } else {
             newToDos = [newToDo]
         }
@@ -40,12 +42,9 @@ export function logicController () {
     }
 
     function hydrateToDo (todoData) {
-        return toDo(todoData.title, todoData.description, todoData.dueDate, todoData.priority)
+        return toDo(todoData.id, todoData.title, todoData.description, todoData.dueDate, todoData.group, todoData.status)
     }
 
-    function handleFormSubmit ({todo, description, dueDate, priority}) {
-        setToDo(toDo(todo, description, dueDate, priority));
-    }
 
-    return {getToDos, setToDo, handleFormSubmit}
+    return {getToDos, setToDo}
 }
