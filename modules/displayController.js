@@ -164,5 +164,11 @@ export function displayController() {
     return addMenuItemContainer;
   }
 
+  //TODO: add a function to render a full todo card when dropdown button is pressed
+  // set an eent listening on the button in the renderTodoListItem method
+
+  //TODO: add event listening to checkbox to call updateStatus methods in logicController
+  // when a todo's checkbox is clicked
+
   return { renderToDosList, renderMenu };
 }

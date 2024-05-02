@@ -93,5 +93,9 @@ export function logicController() {
     localStorage.setItem("groups", JSON.stringify(newGroups));
   }
 
+  //TODO: add an updateStatus method to update a todo's status using its id
+
+  //TODO add methods to update all fields of a todo base on id
+
   return { getToDos, setToDo, getGroups, setGroup };
 }
