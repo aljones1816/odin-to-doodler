@@ -8,19 +8,16 @@
   </head>
   <body>
     <div id="app">
-
-      <div class="menu">
-        <ul class="menu__list">
-          <li class="menu__item">Inbox</li>
-          <li class="menu__item">Today</li>
-          <li class="menu__item">Family</li>
-          <li class="menu__item">Work</li>
-        </ul>
-        <button class="menu__button">New Group</button>
+      <div class="menu" id="menu">
+        <input
+          class="todo-list__input"
+          type="text"
+          placeholder="Add new group"
+        />
+        <button class="todo-list__button" type="button">Add</button>
       </div>
 
-      <div class="todo-list" id="todo-list">
-      </div>
+      <div class="todo-list" id="todo-list"></div>
     </div>
     <script type="module" src="/main.js"></script>
   </body>
