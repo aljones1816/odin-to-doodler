@@ -7,9 +7,23 @@
   </head>
   <body>
     <div id="app">
-      <div class="menu" id="menu"></div>
+      <div class="menu" id="menu">
+        
+      </div>
 
-      <div class="todo-list" id="todo-list"></div>
+      <div class="todo-list" id="todo-list">
+        <div id="todo-1" class="todo-list__item">
+            <div class="todo-list__checkbox"><input type="checkbox" id="todo1" ></div>
+            <p class="todo-list__label">Eat dinner</p>
+            <button type="button" class="todo-list__expand-btn">⮟</button>
+            <div class="todo-list__group">family</div>
+            <div class="todo-list__details" style="display: none;">
+              <p class="todo-list__description">enjoy it</p>
+              <p class="todo-list__due-date">today</p>
+              <button type="button" class="todo-list__edit-btn">Edit</button>
+            </div>
+        </div>
+      </div>
     </div>
     <script type="module" src="/main.js"></script>
   </body>

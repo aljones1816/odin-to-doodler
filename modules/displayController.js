@@ -28,24 +28,17 @@ export function displayController() {
     todoListExpandBtn.textContent = "⮟";
     todoListExpandBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      todoListItem.insertAdjacentElement(
-        "afterend",
-        renderToDoListDetail(todo)
-      );
-      todoListExpandBtn.remove();
+      if (toDoListDetail.style.display === "none") {
+        toDoListDetail.style.display = "";
+    } else {
+        toDoListDetail.style.display = "none";
+    }
+      
     });
 
-    todoListItem.appendChild(todoListCheckbox);
-    todoListItem.appendChild(todoListLabel);
-    todoListItem.appendChild(todoListGroup);
-    todoListItem.appendChild(todoListExpandBtn);
-
-    return todoListItem;
-  }
-
-  function renderToDoListDetail(todo) {
     const toDoListDetail = document.createElement("div");
     toDoListDetail.className = "todo-list__details";
+    toDoListDetail.style.display="none"
 
     const description = document.createElement("p");
     description.className = "todo-list__description";
@@ -64,8 +57,17 @@ export function displayController() {
     toDoListDetail.appendChild(dueDate);
     toDoListDetail.appendChild(editButton);
 
-    return toDoListDetail;
+    todoListItem.appendChild(todoListCheckbox);
+    todoListItem.appendChild(todoListLabel);
+    todoListItem.appendChild(todoListGroup);
+    todoListItem.appendChild(todoListExpandBtn);
+    todoListItem.appendChild(toDoListDetail);
+    
+
+    return todoListItem;
   }
+
+
 
   function renderToDosList(group = "") {
     let todosList = document.getElementById("todo-list");
