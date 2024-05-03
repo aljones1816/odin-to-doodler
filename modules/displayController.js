@@ -38,6 +38,12 @@ export function displayController() {
     return todoListItem;
   }
 
+  function renderToDoListDetail (todo) {
+    const toDoListDetail = document.createElement('div');
+
+    const 
+  }
+
   function renderToDosList(group = "") {
     let todosList = document.getElementById("todo-list");
 

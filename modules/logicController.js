@@ -56,6 +56,24 @@ export function logicController() {
     );
   }
 
+  function updateToDo(updatedTodo) {
+    const todos = getToDos();
+    const index = todos.findIndex((todo) => todo.id == updatedTodo.getId());
+    if (index !== -1) {
+      todos[index] = updatedTodo;
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
+  }
+
+  function deleteToDoById(id) {
+    const todos = getToDos();
+    const index = todos.findIndex((todo) => todo.id == updatedTodo.getId());
+    if (index !== -1) {
+      todos.splice(index, 1);
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
+  }
+
   function getGroups() {
     const groupDatas = JSON.parse(localStorage.getItem("groups"));
     const groups = [];
@@ -97,5 +115,5 @@ export function logicController() {
 
   //TODO add methods to update all fields of a todo base on id
 
-  return { getToDos, setToDo, getGroups, setGroup };
+  return { getToDos, setToDo, getGroups, setGroup, updateToDo, deleteToDoById };
 }
