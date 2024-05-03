@@ -28,6 +28,11 @@ export function displayController() {
     todoListExpandBtn.textContent = "⮟";
     todoListExpandBtn.addEventListener("click", (e) => {
       e.stopPropagation();
+      todoListItem.insertAdjacentElement(
+        "afterend",
+        renderToDoListDetail(todo)
+      );
+      todoListExpandBtn.remove();
     });
 
     todoListItem.appendChild(todoListCheckbox);
@@ -38,10 +43,28 @@ export function displayController() {
     return todoListItem;
   }
 
-  function renderToDoListDetail (todo) {
-    const toDoListDetail = document.createElement('div');
+  function renderToDoListDetail(todo) {
+    const toDoListDetail = document.createElement("div");
+    toDoListDetail.className = "todo-list__details";
 
-    const 
+    const description = document.createElement("p");
+    description.className = "todo-list__description";
+    description.textContent = `${todo.getDescription()}`;
+
+    const dueDate = document.createElement("p");
+    dueDate.className = "todo-list__due-date";
+    dueDate.textContent = `${todo.getDueDate()}`;
+
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "todo-list__edit-btn";
+    editButton.textContent = "Edit";
+
+    toDoListDetail.appendChild(description);
+    toDoListDetail.appendChild(dueDate);
+    toDoListDetail.appendChild(editButton);
+
+    return toDoListDetail;
   }
 
   function renderToDosList(group = "") {
