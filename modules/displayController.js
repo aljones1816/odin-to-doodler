@@ -27,6 +27,7 @@ export function displayController() {
 
     const todoListLabel = document.createElement("label");
     todoListLabel.htmlFor = `todo${todo.getId()}`;
+    todoListLabel.className = "todo-list__label";
     todoListLabel.appendChild(document.createTextNode(`${todo.getTitle()}`));
 
     const todoListGroup = document.createElement("span");
@@ -39,54 +40,45 @@ export function displayController() {
     todoListExpandBtn.textContent = "↓";
     todoListExpandBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (toDoListDetail.style.display === "none") {
-        toDoListDetail.style.display = "";
+      if (todoListExpandBtn.textContent === "↓") {
+        todoListExpandBtn.textContent = "↑";
+        editForm.style.display = "";
+        todoListLabel.style.display = "none";
+        todoListCheckbox.style.display = "none";
+        todoListGroup.style.display = "none";
+        
       } else {
-        toDoListDetail.style.display = "none";
+        todoListExpandBtn.textContent = "↓";
+        editForm.style.display = "none";
+        todoListLabel.style.display = "";
+        todoListCheckbox.style.display = "";
+        todoListGroup.style.display = "";
       }
+      
+
     });
 
-    const toDoListDetail = document.createElement("div");
-    toDoListDetail.className = "todo-list__details";
-    toDoListDetail.style.display = "none";
+    
 
-    const description = document.createElement("p");
-    description.className = "todo-list__description";
-    description.textContent = `${todo.getDescription()}`;
-
-    const dueDate = document.createElement("p");
-    dueDate.className = "todo-list__due-date";
-    dueDate.textContent = `${todo.getDueDate()}`;
-
-    const editButton = document.createElement("button");
-    editButton.type = "button";
-    editButton.className = "todo-list__edit-btn";
-    editButton.textContent = "Edit";
-    editButton.addEventListener("click", (e) => {
-      e.preventDefault();
-      renderEditToDoForm(todo, group);
-    });
-
-    toDoListDetail.appendChild(description);
-    toDoListDetail.appendChild(dueDate);
-    toDoListDetail.appendChild(editButton);
+    const editForm = renderEditToDoForm(todo, group);
+   
 
     todoListItem.appendChild(todoListCheckbox);
     todoListItem.appendChild(todoListLabel);
     todoListItem.appendChild(todoListGroup);
     todoListItem.appendChild(todoListExpandBtn);
-    todoListItem.appendChild(toDoListDetail);
+
+    todoListItem.appendChild(editForm);
 
     return todoListItem;
   }
 
   function renderEditToDoForm(todo, group = "") {
-    const todoListItem = document.getElementById(`todo-${todo.getId()}`);
-    const todoListDetails = todoListItem.querySelector(".todo-list__details");
-    todoListDetails.style.display = "none";
 
     const editForm = document.createElement("form");
     editForm.className = "todo-list__edit-form";
+    editForm.style.display = "none";
+    
 
     const editTitleInput = document.createElement("input");
     editTitleInput.type = "text";
@@ -142,7 +134,7 @@ export function displayController() {
     // add button to delete todo
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
-    deleteButton.className = "todo-list__button";
+    deleteButton.className = "todo__delete-btn";
     deleteButton.textContent = "Delete";
     deleteButton.addEventListener("click", (e) => {
       e.preventDefault();
@@ -157,12 +149,12 @@ export function displayController() {
     editForm.appendChild(deleteButton);
     editForm.appendChild(editFormButton);
 
-    todoListItem.appendChild(editForm);
+    return editForm;
   }
 
   function renderToDosList(group = "") {
     let todosList = document.getElementById("todo-list");
-
+    
     // clear existing content
     todosList.innerHTML = "";
 
@@ -231,9 +223,10 @@ export function displayController() {
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.className = "menu__delete-btn";
-    deleteButton.textContent = "Delete";
+    deleteButton.textContent = "X";
     deleteButton.addEventListener("click", (e) => {
       e.preventDefault();
+      e.stopPropagation();
 
       const todos = logicControl.getToDos(groupName);
       todos.forEach((todo) => {
@@ -249,10 +242,18 @@ export function displayController() {
       });
       logicControl.deleteGroup(groupName);
 
+      
       renderMenu();
+      
       renderToDosList();
+      
+      
     });
-    menuListItem.appendChild(deleteButton);
+
+    if (group.getGroupName() != 'Completed' && group.getGroupName() != "All Items" && group.getGroupName() != "Due Today") {
+      menuListItem.appendChild(deleteButton);
+    }
+    
 
     return menuListItem;
   }
@@ -260,6 +261,7 @@ export function displayController() {
   function renderMenu() {
     const allItemsGroup = group("All Items");
     const completedItemsGroup = group("Completed");
+    const dueTodayGroup = group("Due Today");
 
     const menu = document.getElementById("menu");
     menu.innerHTML = "";
@@ -270,6 +272,8 @@ export function displayController() {
 
     const allItems = renderMenuItem(allItemsGroup);
     menuList.appendChild(allItems);
+    const dueToday = renderMenuItem(dueTodayGroup);
+    menuList.appendChild(dueToday);
     const groups = logicControl.getGroups();
     groups.forEach((group) => {
       const menuListItem = renderMenuItem(group);
@@ -277,6 +281,7 @@ export function displayController() {
     });
     const completedItems = renderMenuItem(completedItemsGroup);
     menuList.appendChild(completedItems);
+
 
     menu.appendChild(menuList);
 
@@ -292,6 +297,7 @@ export function displayController() {
     });
 
     menu.appendChild(menuButton);
+    
   }
 
   function renderAddMenuItemInput() {
@@ -306,11 +312,14 @@ export function displayController() {
     addMenuItemInputBtn.className = "todo-list__button";
     addMenuItemInputBtn.innerText = "Add Group";
     addMenuItemInputBtn.addEventListener("click", (e) => {
+      e.preventDefault();
       const addMenuItemInputValue = addMenuItemInput.value;
       if (addMenuItemInputValue) {
         const newGroup = group(addMenuItemInputValue);
         logicControl.setGroup(newGroup);
         renderMenu();
+        
+        renderToDosList();
       } else {
         renderMenu();
       }

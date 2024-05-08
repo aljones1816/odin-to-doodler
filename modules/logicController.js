@@ -18,6 +18,26 @@ export function logicController() {
           if (hydratedToDo.getStatus()) {
             toDos.push(hydratedToDo);
           }
+        } else if (group == "Due Today") {
+          // push todos with due date of today
+          const hydratedToDo = hydrateToDo(todoDatas[i]);
+          const dueDateString = hydratedToDo.getDueDate();
+          const dueDateParts = dueDateString.split("-");
+          const year = parseInt(dueDateParts[0], 10);
+          const month = parseInt(dueDateParts[1], 10) - 1;
+          const day = parseInt(dueDateParts[2], 10);
+          const dueDate = new Date(year, month, day);
+          dueDate.setHours(0,0,0,0);
+          
+       
+          const today = new Date();
+          today.setHours(0,0,0,0);
+          
+          if (
+            dueDate.getTime() == today.getTime()
+          ) {
+            toDos.push(hydratedToDo);
+          }
         } else if (todoDatas[i].group == group) {
           const hydratedToDo = hydrateToDo(todoDatas[i]);
           if (!hydratedToDo.getStatus()) {
