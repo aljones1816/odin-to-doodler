@@ -75,7 +75,7 @@
 .todo-list__footer {
   display: flex;
   padding: 10px;
-  
+
   position: sticky;
   bottom: 0;
   z-index: 1;
@@ -105,7 +105,7 @@
 .todo-list__item {
   display: grid;
   grid-template-columns: 1fr 6fr 1fr 1fr;
-  
+
   padding: 10px;
   border-bottom: 1px solid #ccc;
   position: relative;
@@ -127,7 +127,6 @@
   grid-row-start: 1;
   grid-row-end: 2;
   text-align: end;
-
 }
 
 .todo-list__label {
@@ -138,7 +137,7 @@
 }
 
 .todo-list__expand-btn {
-  order: 3; 
+  order: 3;
   padding: 5px 10px;
   border: none;
   background: none;
@@ -227,4 +226,9 @@
     grid-row-start: 1;
     grid-row-end: 2;
   }
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #999;
 }

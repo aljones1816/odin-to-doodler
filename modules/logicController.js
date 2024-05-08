@@ -10,10 +10,19 @@ export function logicController() {
       for (let i = 0; i < todoDatas.length; i++) {
         if (!group || group == "All Items") {
           const hydratedToDo = hydrateToDo(todoDatas[i]);
-          toDos.push(hydratedToDo);
+          if (!hydratedToDo.getStatus()) {
+            toDos.push(hydratedToDo);
+          }
+        } else if (group == "Completed") {
+          const hydratedToDo = hydrateToDo(todoDatas[i]);
+          if (hydratedToDo.getStatus()) {
+            toDos.push(hydratedToDo);
+          }
         } else if (todoDatas[i].group == group) {
           const hydratedToDo = hydrateToDo(todoDatas[i]);
-          toDos.push(hydratedToDo);
+          if (!hydratedToDo.getStatus()) {
+            toDos.push(hydratedToDo);
+          }
         }
       }
     }
@@ -57,17 +66,25 @@ export function logicController() {
   }
 
   function updateToDo(updatedTodo) {
-    const todos = getToDos();
+    const todos = JSON.parse(localStorage.getItem("todos"));
     const index = todos.findIndex((todo) => todo.id == updatedTodo.getId());
+    const updatedTodoData = {
+      id: updatedTodo.getId(),
+      title: updatedTodo.getTitle(),
+      description: updatedTodo.getDescription(),
+      dueDate: updatedTodo.getDueDate(),
+      group: updatedTodo.getGroup(),
+      status: updatedTodo.getStatus(),
+    };
     if (index !== -1) {
-      todos[index] = updatedTodo;
+      todos[index] = updatedTodoData;
       localStorage.setItem("todos", JSON.stringify(todos));
     }
   }
 
-  function deleteToDoById(id) {
-    const todos = getToDos();
-    const index = todos.findIndex((todo) => todo.id == updatedTodo.getId());
+  function deleteToDo(id) {
+    const todos = JSON.parse(localStorage.getItem("todos"));
+    const index = todos.findIndex((todo) => todo.id == id);
     if (index !== -1) {
       todos.splice(index, 1);
       localStorage.setItem("todos", JSON.stringify(todos));
@@ -100,6 +117,16 @@ export function logicController() {
       groupName: group.getGroupName(),
     };
 
+    // if new group already exists or has a value of 'Completed' or 'All Items' do not add it
+    if (
+      (currentGroups &&
+        currentGroups.find((group) => group.groupName == newGroup.groupName)) ||
+      newGroup.groupName == "Completed" ||
+      newGroup.groupName == "All Items"
+    ) {
+      return;
+    }
+
     if (currentGroups) {
       newGroups = currentGroups;
 
@@ -111,9 +138,22 @@ export function logicController() {
     localStorage.setItem("groups", JSON.stringify(newGroups));
   }
 
-  //TODO: add an updateStatus method to update a todo's status using its id
+  function deleteGroup(groupName) {
+    const groups = JSON.parse(localStorage.getItem("groups"));
+    const index = groups.findIndex((group) => group.groupName == groupName);
+    if (index !== -1) {
+      groups.splice(index, 1);
+      localStorage.setItem("groups", JSON.stringify(groups));
+    }
+  }
 
-  //TODO add methods to update all fields of a todo base on id
-
-  return { getToDos, setToDo, getGroups, setGroup, updateToDo, deleteToDoById };
+  return {
+    getToDos,
+    setToDo,
+    getGroups,
+    setGroup,
+    updateToDo,
+    deleteToDo,
+    deleteGroup,
+  };
 }

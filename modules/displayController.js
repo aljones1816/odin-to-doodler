@@ -5,7 +5,7 @@ import { group } from "./group";
 const logicControl = logicController();
 
 export function displayController() {
-  function renderTodoListItem(todo) {
+  function renderTodoListItem(todo, group = "") {
     const todoListItem = document.createElement("div");
     todoListItem.id = `todo-${todo.getId()}`;
     todoListItem.className = "todo-list__item";
@@ -13,6 +13,17 @@ export function displayController() {
     const todoListCheckbox = document.createElement("input");
     todoListCheckbox.type = "checkbox";
     todoListCheckbox.id = `todo${todo.getId()}`;
+    todoListCheckbox.checked = todo.getStatus();
+    todoListCheckbox.addEventListener("change", (e) => {
+      todo.setStatus();
+      logicControl.updateToDo(todo);
+      if (group !== "Completed") {
+        todoListLabel.classList.add("completed");
+      }
+      setTimeout(() => {
+        renderToDosList(group);
+      }, 300);
+    });
 
     const todoListLabel = document.createElement("label");
     todoListLabel.htmlFor = `todo${todo.getId()}`;
@@ -25,20 +36,19 @@ export function displayController() {
     const todoListExpandBtn = document.createElement("button");
     todoListExpandBtn.type = "button";
     todoListExpandBtn.className = "todo-list__expand-btn";
-    todoListExpandBtn.textContent = "⮟";
+    todoListExpandBtn.textContent = "↓";
     todoListExpandBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       if (toDoListDetail.style.display === "none") {
         toDoListDetail.style.display = "";
-    } else {
+      } else {
         toDoListDetail.style.display = "none";
-    }
-      
+      }
     });
 
     const toDoListDetail = document.createElement("div");
     toDoListDetail.className = "todo-list__details";
-    toDoListDetail.style.display="none"
+    toDoListDetail.style.display = "none";
 
     const description = document.createElement("p");
     description.className = "todo-list__description";
@@ -52,6 +62,10 @@ export function displayController() {
     editButton.type = "button";
     editButton.className = "todo-list__edit-btn";
     editButton.textContent = "Edit";
+    editButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      renderEditToDoForm(todo, group);
+    });
 
     toDoListDetail.appendChild(description);
     toDoListDetail.appendChild(dueDate);
@@ -62,12 +76,89 @@ export function displayController() {
     todoListItem.appendChild(todoListGroup);
     todoListItem.appendChild(todoListExpandBtn);
     todoListItem.appendChild(toDoListDetail);
-    
 
     return todoListItem;
   }
 
+  function renderEditToDoForm(todo, group = "") {
+    const todoListItem = document.getElementById(`todo-${todo.getId()}`);
+    const todoListDetails = todoListItem.querySelector(".todo-list__details");
+    todoListDetails.style.display = "none";
 
+    const editForm = document.createElement("form");
+    editForm.className = "todo-list__edit-form";
+
+    const editTitleInput = document.createElement("input");
+    editTitleInput.type = "text";
+    editTitleInput.className = "todo-list__input";
+    editTitleInput.value = todo.getTitle();
+
+    const editDescriptionInput = document.createElement("input");
+    editDescriptionInput.type = "text";
+    editDescriptionInput.className = "todo-list__input";
+    editDescriptionInput.value = todo.getDescription();
+
+    const editDueDateInput = document.createElement("input");
+    editDueDateInput.type = "date";
+    editDueDateInput.className = "todo-list__input";
+    editDueDateInput.value = todo.getDueDate();
+
+    // edit group should be a select element with all the groups
+    const editGroupInput = document.createElement("select");
+    editGroupInput.className = "todo-list__input";
+    const groups = logicControl.getGroups();
+
+    const noGroupOption = document.createElement("option");
+    noGroupOption.value = "";
+    noGroupOption.text = "No Group";
+    editGroupInput.appendChild(noGroupOption);
+
+    groups.forEach((group) => {
+      const option = document.createElement("option");
+      option.value = group.getGroupName();
+      option.text = group.getGroupName();
+      editGroupInput.appendChild(option);
+    });
+
+    editGroupInput.value = todo.getGroup();
+
+    const editFormButton = document.createElement("button");
+    editFormButton.type = "button";
+    editFormButton.className = "todo-list__button";
+    editFormButton.textContent = "Save";
+    editFormButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      const updatedToDo = toDo(
+        todo.getId(),
+        editTitleInput.value,
+        editDescriptionInput.value,
+        editDueDateInput.value,
+        editGroupInput.value
+      );
+      logicControl.updateToDo(updatedToDo);
+      renderToDosList(group);
+    });
+
+    // add button to delete todo
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "todo-list__button";
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      logicControl.deleteToDo(todo.getId());
+      renderToDosList(group);
+    });
+
+    editForm.appendChild(editTitleInput);
+    editForm.appendChild(editDescriptionInput);
+    editForm.appendChild(editDueDateInput);
+    editForm.appendChild(editGroupInput);
+    editForm.appendChild(deleteButton);
+    editForm.appendChild(editFormButton);
+
+    todoListItem.appendChild(editForm);
+  }
 
   function renderToDosList(group = "") {
     let todosList = document.getElementById("todo-list");
@@ -78,14 +169,14 @@ export function displayController() {
     // create title element
     const todoListTitle = document.createElement("h2");
     todoListTitle.className = "todo-list__title";
-    todoListTitle.appendChild(document.createTextNode(`All Items`));
+    todoListTitle.appendChild(document.createTextNode(group || "All Items"));
 
     todosList.appendChild(todoListTitle);
 
     // append each todo item
     const todos = logicControl.getToDos(group);
     todos.forEach((todo) => {
-      const todoListItem = renderTodoListItem(todo);
+      const todoListItem = renderTodoListItem(todo, group);
       todosList.appendChild(todoListItem);
     });
 
@@ -107,10 +198,17 @@ export function displayController() {
       const todoListInputValue = todoListInput.value;
       if (todoListInputValue) {
         const newToDoId = logicControl.getToDos().length;
-        const newToDo = toDo(newToDoId, todoListInputValue);
+        const newToDo = toDo(
+          newToDoId,
+          todoListInputValue,
+          "",
+          "",
+          group,
+          false
+        );
 
         logicControl.setToDo(newToDo);
-        renderToDosList();
+        renderToDosList(group);
       }
     });
 
@@ -130,11 +228,38 @@ export function displayController() {
       renderToDosList(groupName);
     });
 
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "menu__delete-btn";
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      const todos = logicControl.getToDos(groupName);
+      todos.forEach((todo) => {
+        const updatedToDo = toDo(
+          todo.getId(),
+          todo.getTitle(),
+          todo.getDescription(),
+          todo.getDueDate(),
+          "",
+          todo.getStatus()
+        );
+        logicControl.updateToDo(updatedToDo);
+      });
+      logicControl.deleteGroup(groupName);
+
+      renderMenu();
+      renderToDosList();
+    });
+    menuListItem.appendChild(deleteButton);
+
     return menuListItem;
   }
 
   function renderMenu() {
     const allItemsGroup = group("All Items");
+    const completedItemsGroup = group("Completed");
 
     const menu = document.getElementById("menu");
     menu.innerHTML = "";
@@ -150,6 +275,8 @@ export function displayController() {
       const menuListItem = renderMenuItem(group);
       menuList.appendChild(menuListItem);
     });
+    const completedItems = renderMenuItem(completedItemsGroup);
+    menuList.appendChild(completedItems);
 
     menu.appendChild(menuList);
 
@@ -194,12 +321,6 @@ export function displayController() {
 
     return addMenuItemContainer;
   }
-
-  //TODO: add a function to render a full todo card when dropdown button is pressed
-  // set an eent listening on the button in the renderTodoListItem method
-
-  //TODO: add event listening to checkbox to call updateStatus methods in logicController
-  // when a todo's checkbox is clicked
 
   return { renderToDosList, renderMenu };
 }
